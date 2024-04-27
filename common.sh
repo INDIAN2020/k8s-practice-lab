@@ -15,15 +15,20 @@ echo "********** $KVMSG"
 apt-get update && apt-get install apt-transport-https ca-certificates curl software-properties-common
 
 ### Add Kubernetes GPG key
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
 
 ### Kubernetes Repo
 echo "deb  http://apt.kubernetes.io/  kubernetes-$(lsb_release -cs)  main" > /etc/apt/sources.list.d/kubernetes.list
 
+
 ### Add Docker’s official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
+
 
 ### Add Docker apt repository.
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 add-apt-repository \
   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) \
@@ -41,7 +46,9 @@ echo "********** $KVMSG"
 echo "********** $KVMSG ->> Installing Required & Recommended Packages"
 echo "********** $KVMSG"
 echo "********** $KVMSG"
-apt-get install -y avahi-daemon libnss-mdns traceroute htop httpie bash-completion docker-ce=5:18.09.1~3-0~ubuntu-$(lsb_release -cs) kubeadm kubelet kubectl
+apt-get install -y avahi-daemon libnss-mdns traceroute htop httpie bash-completion docker-ce docker-ce-cli containerd.io kubeadm kubelet kubectl
+                                                                                  
+
 
 # Setup Docker daemon.
 cat > /etc/docker/daemon.json <<EOF
